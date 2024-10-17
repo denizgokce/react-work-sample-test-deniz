@@ -1,0 +1,7 @@
+{
+  "extends": [
+    "github>bettermarks/renovate-config:javascript",
+    ":automergePatch"
+  ],
+  "automerge": true
+}
