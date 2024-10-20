@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import {TodosFooter} from './components/TodosFooter';
-import {TodosHeader} from './components/TodosHeader';
-import {OnSubmit, TodoInput} from './components/TodoInput';
-import {TodoList} from './components/TodoList';
-import {Todo} from './types';
-import {TodoStatusBar} from './components/TodoStatusBar';
+import {TodosFooter} from './components/TodosFooter/TodosFooter';
+import {TodosHeader} from './components/TodosHeader/TodosHeader';
+import {OnSubmit, TodoInput} from './components/TodoInput/TodoInput';
+import {TodoList} from './components/TodoList/TodoList';
+import {TodoStatusBar} from './components/TodoStatusBar/TodoStatusBar';
+import {useTodoStore} from './stores/todoStore';
+import {Todo} from './models/types';
+import {OnToggle} from './components/TodoItem/TodoItem';
 
 export const AppContainer = styled.div`
   display: flex;
@@ -16,53 +18,55 @@ export const AppContainer = styled.div`
   height: 100vh;
 `;
 
-export interface AppState {
-  todos: Array<Todo>;
-}
-
 export const App: React.FC = () => {
   const [todos, setTodos] = React.useState<Todo[]>([]);
+  const todoStore = useTodoStore();
 
   React.useEffect(() => {
-    (async () => {
-      const response = await fetch('http://localhost:3001/todos');
-      setTodos(await response.json());
-    })();
+    todoStore.fetch();
   }, []);
 
-  const createTodo: OnSubmit = async text => {
-    const newTodo = {
-      text,
-      done: false,
-      createdTimestamp: Date.now(),
-    };
+  React.useEffect(() => {
+    setTodos(todoStore.todos);
+  }, [todoStore]);
 
-    const response = await fetch('http://localhost:3001/todos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newTodo),
-    });
-    if (!response.ok) {
-      window.alert(
-        `Unexpected error ${response.status}: ${response.statusText}`
+  React.useEffect(() => {
+    if (todoStore.allDone) {
+      alert(
+        `Congratulations, you're all set! You've done everything on your list.`
       );
-      return text;
     }
-    setTodos([...todos, await response.json()]);
-    return '';
+  }, [todoStore.allDone]);
+
+  const createTodo: OnSubmit = async text => {
+    return await todoStore.create(text);
+  };
+
+  const toggleTodo: OnToggle = async (id: string | number) => {
+    await todoStore.toggle(id);
+    setTodos(todoStore.todos);
+  };
+
+  const deleteTodo = async (id: string | number) => {
+    await todoStore.delete(id);
+    setTodos(todoStore.todos);
   };
 
   return (
     <AppContainer className='App'>
       <TodosHeader>
-        <TodoStatusBar total={todos.length} />
+        <TodoStatusBar
+          total={todoStore.todos.length}
+          done={todoStore.todos.filter(x => x.done).length}
+        />
       </TodosHeader>
       <TodoInput onSubmit={createTodo} />
-      <TodoList todos={todos} />
+      <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
       <TodosFooter>
-        <TodoStatusBar total={todos.length} />
+        <TodoStatusBar
+          total={todoStore.todos.length}
+          done={todoStore.todos.filter(x => x.done).length}
+        />
       </TodosFooter>
     </AppContainer>
   );
