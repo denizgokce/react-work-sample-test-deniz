@@ -1,9 +1,9 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { TodosFooter } from './TodosFooter';
+import {render} from '@testing-library/react';
+import {TodosFooter} from './TodosFooter';
 
 test('renders TodosFooter component with children', () => {
-  const { getByText } = render(
+  const {getByText} = render(
     <TodosFooter>
       <span>Footer Content</span>
     </TodosFooter>
@@ -14,8 +14,8 @@ test('renders TodosFooter component with children', () => {
 });
 
 test('applies className to TodosFooter component', () => {
-  const { container } = render(
-    <TodosFooter className="custom-class">
+  const {container} = render(
+    <TodosFooter className='custom-class'>
       <span>Footer Content</span>
     </TodosFooter>
   );

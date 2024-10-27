@@ -1,9 +1,9 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { TodosHeader } from './TodosHeader';
+import {render} from '@testing-library/react';
+import {TodosHeader} from './TodosHeader';
 
 test('renders TodosHeader component with children', () => {
-  const { getByText } = render(
+  const {getByText} = render(
     <TodosHeader>
       <span>Header Content</span>
     </TodosHeader>
@@ -14,8 +14,8 @@ test('renders TodosHeader component with children', () => {
 });
 
 test('applies className to TodosHeader component', () => {
-  const { container } = render(
-    <TodosHeader className="custom-class">
+  const {container} = render(
+    <TodosHeader className='custom-class'>
       <span>Header Content</span>
     </TodosHeader>
   );
@@ -25,7 +25,7 @@ test('applies className to TodosHeader component', () => {
 });
 
 test('renders heading text', () => {
-  const { getByText } = render(<TodosHeader />);
+  const {getByText} = render(<TodosHeader />);
   const headingElement = getByText('TODO APP');
   expect(headingElement).toBeInTheDocument();
 });

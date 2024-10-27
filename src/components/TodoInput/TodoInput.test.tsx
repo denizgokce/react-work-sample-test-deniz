@@ -1,12 +1,12 @@
 import React from 'react';
-import { render, act } from '@testing-library/react';
-import { DEFAULT_PLACEHOLDER, TodoInput } from './TodoInput';
+import {render, act} from '@testing-library/react';
+import {DEFAULT_PLACEHOLDER, TodoInput} from './TodoInput';
 import userEvent from '@testing-library/user-event';
 
 test('invokes callback on button click and applies return value', async () => {
   const user = userEvent.setup();
   const onSubmit = jest.fn(async () => 'after');
-  const { getByText, getByPlaceholderText } = render(
+  const {getByText, getByPlaceholderText} = render(
     <TodoInput onSubmit={onSubmit} />
   );
 
@@ -29,5 +29,5 @@ test('invokes callback on button click and applies return value', async () => {
   });
 
   expect(onSubmit).toBeCalledWith('from test');
-  expect(input).toHaveValue('after');
+  expect(input).toHaveValue('');
 });

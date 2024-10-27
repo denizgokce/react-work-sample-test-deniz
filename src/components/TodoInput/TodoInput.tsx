@@ -42,7 +42,14 @@ const _TodoInput: React.FC<TodoInputProps> = ({
         value={text}
         onChange={handleTextInput}
       />
-      <AddButton onClick={async () => text && setText(await onSubmit(text))}>
+      <AddButton
+        onClick={async () => {
+          if (text) {
+            await onSubmit(text);
+            setText('');
+          }
+        }}
+      >
         +
       </AddButton>
     </div>

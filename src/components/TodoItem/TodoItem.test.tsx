@@ -1,8 +1,8 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import {render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TodoItem, OnToggle, OnDelete } from './TodoItem';
-import { Todo } from '../../models/types';
+import {TodoItem, OnToggle, OnDelete} from './TodoItem';
+import {Todo} from '../../models/types';
 
 const mockTodo: Todo = {
   id: '1',
@@ -15,7 +15,7 @@ test('invokes onToggle callback when checkbox is clicked', async () => {
   const user = userEvent.setup();
   const onToggle: OnToggle = jest.fn();
   const onDelete: OnDelete = jest.fn();
-  const { getByRole } = render(
+  const {getByRole} = render(
     <TodoItem todo={mockTodo} onToggle={onToggle} onDelete={onDelete} />
   );
 
@@ -30,7 +30,7 @@ test('invokes onDelete callback when delete button is clicked', async () => {
   const user = userEvent.setup();
   const onToggle: OnToggle = jest.fn();
   const onDelete: OnDelete = jest.fn();
-  const { getByText } = render(
+  const {getByText} = render(
     <TodoItem todo={mockTodo} onToggle={onToggle} onDelete={onDelete} />
   );
 
@@ -38,4 +38,17 @@ test('invokes onDelete callback when delete button is clicked', async () => {
   expect(deleteButton).toBeInTheDocument();
   await user.click(deleteButton);
   expect(onDelete).toBeCalledWith(mockTodo.id);
+});
+
+test('applies strikethrough style to text when todo is done', () => {
+  const onToggle: OnToggle = jest.fn();
+  const onDelete: OnDelete = jest.fn();
+  const doneTodo = {...mockTodo, done: true};
+  const {getByText} = render(
+    <TodoItem todo={doneTodo} onToggle={onToggle} onDelete={onDelete} />
+  );
+
+  const todoText = getByText('Test Todo');
+  expect(todoText).toBeInTheDocument();
+  expect(todoText).toHaveStyle('text-decoration: line-through');
 });

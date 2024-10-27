@@ -8,6 +8,7 @@ import {TodoStatusBar} from './components/TodoStatusBar/TodoStatusBar';
 import {useTodoStore} from './stores/todoStore';
 import {Todo} from './models/types';
 import {OnToggle} from './components/TodoItem/TodoItem';
+import {TodoFilter} from './components/TodoFilter/TodoFilter';
 
 export const AppContainer = styled.div`
   display: flex;
@@ -20,6 +21,9 @@ export const AppContainer = styled.div`
 
 export const App: React.FC = () => {
   const [todos, setTodos] = React.useState<Todo[]>([]);
+  const [filteredTodos, setFilteredTodos] = React.useState<Todo[]>([]);
+  const [filterText, setFilterText] = React.useState('');
+
   const todoStore = useTodoStore();
 
   React.useEffect(() => {
@@ -27,8 +31,28 @@ export const App: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
-    setTodos(todoStore.todos);
+    const _todos = todoStore.todos;
+    let _filteredTodos = todoStore.todos;
+    setTodos(_todos);
+    if (filterText.length > 0) {
+      _filteredTodos = _filteredTodos.filter(todo =>
+        todo.text.toLowerCase().includes(filterText.toLowerCase())
+      );
+    }
+    setFilteredTodos(_filteredTodos);
   }, [todoStore]);
+
+  React.useEffect(() => {
+    const _todos = todoStore.todos;
+    let _filteredTodos = _todos;
+    setTodos(_todos);
+    if (filterText.length > 0) {
+      _filteredTodos = _filteredTodos.filter(todo =>
+        todo.text.toLowerCase().includes(filterText.toLowerCase())
+      );
+    }
+    setFilteredTodos(_filteredTodos);
+  }, [todoStore.todos, filterText]);
 
   React.useEffect(() => {
     if (todoStore.allDone) {
@@ -52,16 +76,28 @@ export const App: React.FC = () => {
     setTodos(todoStore.todos);
   };
 
+  const handleFilterChange = (filterText: string) => {
+    setFilterText(filterText);
+  };
+
   return (
     <AppContainer className='App'>
       <TodosHeader>
+        <TodoFilter
+          filterText={filterText}
+          onFilterChange={handleFilterChange}
+        ></TodoFilter>
         <TodoStatusBar
           total={todoStore.todos.length}
           done={todoStore.todos.filter(x => x.done).length}
         />
       </TodosHeader>
       <TodoInput onSubmit={createTodo} />
-      <TodoList todos={todos} onToggle={toggleTodo} onDelete={deleteTodo} />
+      <TodoList
+        todos={filteredTodos}
+        onToggle={toggleTodo}
+        onDelete={deleteTodo}
+      />
       <TodosFooter>
         <TodoStatusBar
           total={todoStore.todos.length}
