@@ -34,7 +34,7 @@ export const useTodoStore = create<TodoStore>()((set, get) => ({
     return Promise.resolve(fetchedTodos);
   },
   create: async (text: string): Promise<string> => {
-    let {service, fetch, checkIfAllDone} = get();
+    let {service, fetch} = get();
     let newTodo = {
       id: uuidv4(),
       text,

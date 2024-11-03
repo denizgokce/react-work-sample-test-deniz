@@ -20,7 +20,6 @@ export const AppContainer = styled.div`
 `;
 
 export const App: React.FC = () => {
-  const [todos, setTodos] = React.useState<Todo[]>([]);
   const [filteredTodos, setFilteredTodos] = React.useState<Todo[]>([]);
   const [filterText, setFilterText] = React.useState('');
 
@@ -28,24 +27,10 @@ export const App: React.FC = () => {
 
   React.useEffect(() => {
     todoStore.fetch();
-  }, []);
-
-  React.useEffect(() => {
-    const _todos = todoStore.todos;
-    let _filteredTodos = todoStore.todos;
-    setTodos(_todos);
-    if (filterText.length > 0) {
-      _filteredTodos = _filteredTodos.filter(todo =>
-        todo.text.toLowerCase().includes(filterText.toLowerCase())
-      );
-    }
-    setFilteredTodos(_filteredTodos);
   }, [todoStore]);
 
-  React.useEffect(() => {
-    const _todos = todoStore.todos;
-    let _filteredTodos = _todos;
-    setTodos(_todos);
+  const filterTodos = React.useCallback(() => {
+    let _filteredTodos = todoStore.todos;
     if (filterText.length > 0) {
       _filteredTodos = _filteredTodos.filter(todo =>
         todo.text.toLowerCase().includes(filterText.toLowerCase())
@@ -53,6 +38,10 @@ export const App: React.FC = () => {
     }
     setFilteredTodos(_filteredTodos);
   }, [todoStore.todos, filterText]);
+
+  React.useEffect(() => {
+    filterTodos();
+  }, [todoStore.todos, filterText, filterTodos]);
 
   React.useEffect(() => {
     if (todoStore.allDone) {
@@ -68,12 +57,12 @@ export const App: React.FC = () => {
 
   const toggleTodo: OnToggle = async (id: string | number) => {
     await todoStore.toggle(id);
-    setTodos(todoStore.todos);
+    filterTodos();
   };
 
   const deleteTodo = async (id: string | number) => {
     await todoStore.delete(id);
-    setTodos(todoStore.todos);
+    filterTodos();
   };
 
   const handleFilterChange = (filterText: string) => {

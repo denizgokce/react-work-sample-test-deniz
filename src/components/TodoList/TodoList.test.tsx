@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {TodoList, TodoListProps} from './TodoList';
+import {TodoList} from './TodoList';
 import {Todo} from '../../models/types';
 
 const mockTodos: Todo[] = [

@@ -1,7 +1,6 @@
 import React from 'react';
 import {render, screen, fireEvent, act} from '@testing-library/react';
 import {TodoFilter} from './TodoFilter';
-import {InputWithDebounce} from '../InputWithDebounce/InputWithDebounce';
 
 jest.mock('../InputWithDebounce/InputWithDebounce', () => {
   return {
