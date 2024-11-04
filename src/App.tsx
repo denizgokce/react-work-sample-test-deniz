@@ -27,7 +27,7 @@ export const App: React.FC = () => {
 
   React.useEffect(() => {
     todoStore.fetch();
-  }, [todoStore]);
+  }, []);
 
   const filterTodos = React.useCallback(() => {
     let _filteredTodos = todoStore.todos;
@@ -41,7 +41,7 @@ export const App: React.FC = () => {
 
   React.useEffect(() => {
     filterTodos();
-  }, [todoStore.todos, filterText, filterTodos]);
+  }, [todoStore.todos, filterText]);
 
   React.useEffect(() => {
     if (todoStore.allDone) {
@@ -57,12 +57,10 @@ export const App: React.FC = () => {
 
   const toggleTodo: OnToggle = async (id: string | number) => {
     await todoStore.toggle(id);
-    filterTodos();
   };
 
   const deleteTodo = async (id: string | number) => {
     await todoStore.delete(id);
-    filterTodos();
   };
 
   const handleFilterChange = (filterText: string) => {
